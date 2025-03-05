@@ -1,0 +1,45 @@
+services:
+  database:
+    image: mariadb:latest
+    container_name: mariadb-compose
+    environment:
+      MYSQL_ROOT_PASSWORD:  ${ME_CONFIG_MARIADB_ADMINPASSWORD}
+      MARIADB_DATABASE: db_chatbot
+      MARIADB_USER: ${ME_CONFIG_MARIADB_ADMINUSERNAME}
+      MARIADB_PASSWORD: ${ME_CONFIG_MARIADB_ADMINPASSWORD}
+    ports:
+     - "3306:3306"
+    networks:
+      - fastapi_network
+    volumes:
+      - ../database/schema.sql:/docker-entrypoint-initdb.d/schema.sql
+  web:
+    container_name: chatbot
+    build: ../webserver/.
+    ports:
+      - "8000:8000"
+    networks:
+      - fastapi_network
+    depends_on:
+      - database
+    volumes:
+      - ../webserver:/app
+
+
+  ollama:
+    image: ollama/ollama
+    container_name: ollama-chatbot
+    ports:
+      - '11434:11434'
+    volumes:
+      - ollama:/root/.ollama
+    environment:
+      - OLLAMA_HOST=0.0.0.0
+      - OLLAM_KEEP_ALIVE=1h ollama serve
+volumes:
+  ollama:
+
+networks:
+  fastapi_network:
+    name: fastapi_network
+    driver: bridge
