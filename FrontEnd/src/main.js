@@ -25,8 +25,6 @@ document.addEventListener('DOMContentLoaded', () => {
 
     // Define the API URL
     const apiUrl = 'http://0.0.0.0:8000/chatbot?id=' + conversation_id.value + '&message=' + input;
-    // Make a GET request
-    let chatbot_res = "";
     await fetch(apiUrl, {method: "POST"})
         .then(response => {
           if (!response.ok) {
@@ -35,18 +33,14 @@ document.addEventListener('DOMContentLoaded', () => {
           }
           return response.json();
         })
-        .then(data => {
-          chatbot_res = data;
-          console.log(data);
+        .then(chatbot_res => {
+          AppendToChat(chatbot, chatbot_res["message"].at(-1)["message"]);
+          conversation_id.value = chatbot_res["conversation_id"];
+          console.log(chatbot_res);
         })
         .catch(error => {
           console.error('Got an error:', error);
         });
-    /*for(const json of chatbot_res["message"]) {
-      console.log(json["message"]);
-    }*/
-    AppendToChat(chatbot, chatbot_res["message"].at(-1)["message"]);
-    conversation_id.value = chatbot_res["conversation_id"];
   }
 
   input_msgs.addEventListener("keypress", (e) => {
