@@ -50,12 +50,16 @@ def updateQuery(cursor, id: str, msg: str):
     except mariadb.Error as e:
         print(f"Error: {e}")
 
+# User must ensure the new_key is not already a key in the dictionary.
+def updateKeyInDictionary(collection: list, old_key, new_key):
+    for dict in collection:
+        dict[new_key] = dict.pop(old_key)
+
+
 def callChatBot(message, context):
     client = ollama.Client(host=env.ENV_CONFIG_OLLAMA_HOST)
-    check = context + [{"role": "user", "content": message}]
-    print("check: ",check)
     response = client.chat(
         'llama3.2',
-        messages= context+ [{"role": "user", "content": message}],
+        messages= context + [{"role": "user", "content": message}],
     )
     return response.message.content

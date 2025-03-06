@@ -1,6 +1,6 @@
-from fastapi import FastAPI
+from fastapi import FastAPI, HTTPException, status
 from fastapi.middleware.cors import CORSMiddleware
-import functions
+import utilities
 import json
 app = FastAPI()
 
@@ -20,35 +20,37 @@ app.add_middleware(
 
 @app.get("/")
 def index():
-    return {"message": "Hello Worlds"}
+    raise HTTPException(status_code=status.HTTP_501_NOT_IMPLEMENTED,
+                        detail="Esta funcionalidad aún no está implementada")
 
-@app.get("/chatbot")
+@app.post("/chatbot")
 def chatbot(id: str, message: str):
     context = []
-    connection = functions.connectDB()
+    connection = utilities.connectDB()
     cursor = connection.cursor()
 
     if id is not None and id != "":
-        result = functions.selectQuery(cursor, id)
+        result = utilities.selectQuery(cursor, id)
 
         if result is None:
             return {"message": "The conversation id doesn't exist."}
         id, context = result
         context = json.loads(context)
 
-    response = functions.callChatBot(message, context)
+    response = utilities.callChatBot(message, context)
     context += [
         {"role": "user", "content": message},
         {"role": "assistant", "content": response},
     ]
 
     if id is None or id == "":
-        id = functions.generateUUID()
-        functions.insertQuery(cursor, id, json.dumps(context))
+        id = utilities.generateUUID()
+        utilities.insertQuery(cursor, id, json.dumps(context))
         connection.commit()
     else:
-        functions.updateQuery(cursor, id, json.dumps(context))
+        utilities.updateQuery(cursor, id, json.dumps(context))
         connection.commit()
 
-    functions.disconnectDB(connection)
+    utilities.disconnectDB(connection)
+    utilities.updateKeyInDictionary(context, "content", "message")
     return {"conversation_id": {id}, "message": context}
