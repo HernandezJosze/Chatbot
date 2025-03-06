@@ -2,7 +2,9 @@ import mariadb
 import sys
 import uuid
 import env
-from ollama import chat
+import requests
+import json
+import ollama
 
 def connectDB():
     try:
@@ -23,7 +25,7 @@ def disconnectDB(connection):
         connection.close()
 
     except mariadb.Error as e:
-        print(f"!Error disconnecting from MariaDB Platform: {e}")
+        print(f"Error disconnecting from MariaDB Platform: {e}")
         sys.exit(1)
 
 def generateUUID() -> str:
@@ -31,10 +33,29 @@ def generateUUID() -> str:
 
 def selectQuery(cursor, id: str):
     try:
-        cursor.execute("SELECT id, conversation from db_chatbot.t_conversation where id=?;", (id,))
+        cursor.execute("SELECT id, conversation from db_chatbot.t_conversation WHERE id=?;", (id,))
         return cursor.fetchone()
     except mariadb.Error as e:
         print(f"Error: {e}")
 
+def insertQuery(cursor, id: str, msg: str):
+    try:
+        cursor.execute("INSERT INTO db_chatbot.t_conversation (id, conversation) VALUES (?, ?);", (id, msg))
+    except mariadb.Error as e:
+        print(f"Error: {e}")
+
+def updateQuery(cursor, id: str, msg: str):
+    try:
+        cursor.execute("UPDATE db_chatbot.t_conversation SET conversation=? WHERE id=?;", (msg, id))
+    except mariadb.Error as e:
+        print(f"Error: {e}")
+
 def callChatBot(message, context):
-    return ""
+    client = ollama.Client(host=env.ENV_CONFIG_OLLAMA_HOST)
+    check = context + [{"role": "user", "content": message}]
+    print("check: ",check)
+    response = client.chat(
+        'llama3.2',
+        messages= context+ [{"role": "user", "content": message}],
+    )
+    return response.message.content
