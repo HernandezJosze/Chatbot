@@ -12,6 +12,8 @@ services:
     networks:
       - fastapi_network
     volumes:
+    # to have persistent database we need to uncomment the next line.
+    #  - mariadb_volume:/var/lib/mysql
       - ../database/schema.sql:/docker-entrypoint-initdb.d/schema.sql
   web:
     container_name: chatbot
@@ -40,6 +42,8 @@ services:
       - fastapi_network
 volumes:
   ollama:
+  # to have persistent database we need to uncomment the next line.
+  #mariadb_volume:
 
 networks:
   fastapi_network:
