@@ -36,20 +36,20 @@ def generateUUID() -> str:
 
 def selectQuery(cursor, id: str):
     try:
-        cursor.execute("SELECT id, conversation from db_chatbot.t_conversation WHERE id=?;", (id,))
+        cursor.execute("SELECT id, conversation from t_conversation WHERE id=?;", (id,))
         return cursor.fetchone()
     except mariadb.Error as e:
         print(f"Error: {e}")
 
 def insertQuery(cursor, id: str, msg: str):
     try:
-        cursor.execute("INSERT INTO db_chatbot.t_conversation (id, conversation) VALUES (?, ?);", (id, msg))
+        cursor.execute("INSERT INTO t_conversation (id, conversation) VALUES (?, ?);", (id, msg))
     except mariadb.Error as e:
         print(f"Error: {e}")
 
 def updateQuery(cursor, id: str, msg: str):
     try:
-        cursor.execute("UPDATE db_chatbot.t_conversation SET conversation=? WHERE id=?;", (msg, id))
+        cursor.execute("UPDATE t_conversation SET conversation=? WHERE id=?;", (msg, id))
     except mariadb.Error as e:
         print(f"Error: {e}")
 
