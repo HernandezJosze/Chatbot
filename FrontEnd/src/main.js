@@ -15,7 +15,7 @@ document.addEventListener('DOMContentLoaded', () => {
     chat_msgs.appendChild(new_input_msg);
     chat_msgs.appendChild(document.createElement("br"));
     chat_msgs.scrollTop = chat_msgs.scrollHeight;
-  };
+  }
 
   const enter_btn = document.getElementById("send-button");
   enter_btn.onclick = async () => {
