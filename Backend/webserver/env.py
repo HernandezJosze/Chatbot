@@ -1,0 +1,9 @@
+import os
+from dotenv import load_dotenv
+
+load_dotenv()
+ENV_DB_USER = os.getenv("CONFIG_MARIADB_ADMINUSERNAME")
+ENV_DB_PASSWORD = os.getenv("CONFIG_MARIADB_ADMINPASSWORD")
+ENV_DB_HOST = os.getenv("CONFIG_MARIADB_HOST")
+ENV_DB_DATABASE = os.getenv("CONFIG_MARIADB_DATABASE")
+ENV_CONFIG_OLLAMA_HOST = os.getenv("CONFIG_OLLAMA_HOST")
