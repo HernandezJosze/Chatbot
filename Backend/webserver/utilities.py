@@ -6,6 +6,9 @@ import requests
 import json
 import ollama
 
+client = ollama.Client(host=env.ENV_CONFIG_OLLAMA_HOST)
+
+
 def connectDB():
     try:
         conn = mariadb.connect(
@@ -55,11 +58,28 @@ def updateKeyInDictionary(collection: list, old_key, new_key):
     for dict in collection:
         dict[new_key] = dict.pop(old_key)
 
+def isCustomModelCreated(custom_model: str):
+    for model in client.list().models:
+      if custom_model in model.model:
+        return True
+    return False
+
+def createCustomOllamaModel(custom_model: str):
+    client.create(
+      model=custom_model,
+      from_='llama3.2',
+      system=env.CONFIG_OLLAMA_SYSTEM,
+      stream=False,
+      parameters={"temperature": 1},
+    )
 
 def callChatBot(message, context):
-    client = ollama.Client(host=env.ENV_CONFIG_OLLAMA_HOST)
+    if not isCustomModelCreated(env.ENV_OLLAMA_MODEL):
+        print("Creating custom model")
+        createCustomOllamaModel(env.ENV_OLLAMA_MODEL)
+
     response = client.chat(
-        'llama3.2',
+        model=env.ENV_OLLAMA_MODEL,
         messages= context + [{"role": "user", "content": message}],
     )
     return response.message.content
