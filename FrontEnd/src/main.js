@@ -25,9 +25,8 @@ document.addEventListener('DOMContentLoaded', () => {
     input_msgs.value = "";
     AppendToChat(user, input);
 
-    await fetch(apiUrl + '?id=' + conversation_id.value + '&message=' + input,
-        {method: "POST",
-             mode: "no-cors"})
+    await fetch(apiUrl + '?conversation_id=' + conversation_id.value + '&message=' + input,
+        {method: "POST"})
         .then(response => {
           if (!response.ok) {
             console.log(response);
