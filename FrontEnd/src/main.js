@@ -4,6 +4,8 @@ document.addEventListener('DOMContentLoaded', () => {
   const chat_msgs = document.getElementById("chat-messages");
   const input_msgs = document.getElementById("message-input");
   const conversation_id = document.getElementById("conversation_id_input");
+  //const apiURL = 'http://0.0.0.0:8000/chatbot'
+  const apiUrl = 'https://relevant-powerful-stork.ngrok-free.app/chatbot'
 
   function AppendToChat(sender, msg) {
     if(msg === "") {
@@ -23,9 +25,7 @@ document.addEventListener('DOMContentLoaded', () => {
     input_msgs.value = "";
     AppendToChat(user, input);
 
-    // Define the API URL
-    const apiUrl = 'http://0.0.0.0:8000/chatbot?id=' + conversation_id.value + '&message=' + input;
-    await fetch(apiUrl, {method: "POST"})
+    await fetch(apiUrl + '?id=' + conversation_id.value + '&message=' + input, {method: "POST"})
         .then(response => {
           if (!response.ok) {
             console.log(response);
