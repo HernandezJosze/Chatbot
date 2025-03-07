@@ -35,11 +35,13 @@ services:
       - '11434:11434'
     volumes:
       - ollama:/root/.ollama
+      - ./entrypoint.sh:/entrypoint.sh
     environment:
       - OLLAMA_HOST=0.0.0.0
       - OLLAM_KEEP_ALIVE=1h ollama serve
     networks:
       - fastapi_network
+    entrypoint: ["/usr/bin/bash", "/entrypoint.sh"]
 volumes:
   ollama:
   # to have persistent database we need to uncomment the next line.
