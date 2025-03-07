@@ -68,7 +68,7 @@ def createCustomOllamaModel(custom_model: str):
     client.create(
       model=custom_model,
       from_='llama3.2',
-      system=env.CONFIG_OLLAMA_SYSTEM,
+      system=env.ENV_OLLAMA_SYSTEM,
       stream=False,
       parameters={"temperature": 1},
     )
