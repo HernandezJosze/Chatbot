@@ -15,9 +15,18 @@ document.addEventListener('DOMContentLoaded', () => {
     let new_input_msg = document.createElement("div");
     new_input_msg.textContent = sender + ": " + msg;
     chat_msgs.appendChild(new_input_msg);
-    chat_msgs.appendChild(document.createElement("br"));
+    chat_msgs.appendChild(document.createElement("hr"));
     chat_msgs.scrollTop = chat_msgs.scrollHeight;
   }
+
+  const states = ["none", ""];
+  let cur_state = true;
+  document.getElementById("chatbot_button").addEventListener("click", () => {
+      const chatbox = document.getElementById("chat-box");
+      chatbox.style.display = states[+ !cur_state];
+      console.log(+ !cur_state);
+      cur_state = !cur_state;
+  });
 
   const enter_btn = document.getElementById("send-button");
   enter_btn.onclick = async () => {
