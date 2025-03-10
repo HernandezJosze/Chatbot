@@ -4,8 +4,7 @@ document.addEventListener('DOMContentLoaded', () => {
   const chat_msgs = document.getElementById("chat-messages");
   const input_msgs = document.getElementById("message-input");
   const conversation_id = document.getElementById("conversation_id_input");
-  //const apiURL = 'http://0.0.0.0:8000/chatbot'
-  const apiUrl = 'https://relevant-powerful-stork.ngrok-free.app/chatbot'
+  const apiURL = 'http://0.0.0.0:8000/chatbot'
 
   function AppendToChat(sender, msg) {
     if(msg === "") {
